@@ -1,13 +1,40 @@
-import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import AppLayout from "./layouts/AppLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
+import TransactionsPage from "./pages/TransactionsPage";
 
-const App = () => {
+// All the app's pages and rules about who can see them
+function AppRoutes() {
+  const { user } = useAuth();
+
   return (
-    <div className="h-screen w-full flex justify-center items-center bg-blue-200">
-      <h1 className="text-grey-700 font-bold text-3xl">
-        Hello, world!
-      </h1>
-    </div>
-  );
-};
+    <Routes>
+      {/* Login / register - logged-in users get sent to the dashboard */}
+      <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="login" />} />
+      <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="register" />} />
 
-export default App;
+      {/* Everything below requires login (ProtectedRoute) and uses the shared layout */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppLayout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
+        </Route>
+      </Route>
+
+      {/* Unknown URL -> go to dashboard (or login if logged out) */}
+      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}
