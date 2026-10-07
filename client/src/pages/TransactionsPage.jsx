@@ -421,7 +421,7 @@ export default function TransactionsPage() {
 
       {/* Delete confirmation popup (only rendered when deleteTarget is set) */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-[60] grid place-items-center bg-slate-950/40 p-4 backdrop-blur-[2px]">
+        <div className="fixed inset-0 z-60 grid place-items-center bg-slate-950/40 p-4 backdrop-blur-[2px]">
           <section
             role="alertdialog"
             aria-modal="true"

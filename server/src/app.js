@@ -3,9 +3,14 @@ import cors from "cors";
 import mainRouter from "./routes/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFound } from "./middleware/notFound.js";
+import "dotenv/config";
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URI,
+  }),
+);
 app.use(express.json());
 
 //mount all routes to app
